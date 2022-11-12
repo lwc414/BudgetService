@@ -21,7 +21,7 @@ public class BudgetService
 		double dblTotalBudget = 0.0;
 		LocalDate ldStart = this.validateInputDate(strStartDate), ldEnd = this.validateInputDate(strEndDate);
 
-		if (null == ldStart || null == ldEnd || !(ldEnd.isAfter(ldStart) && !ldEnd.equals(ldStart)))
+		if (null == ldStart || null == ldEnd || (!ldEnd.equals(ldStart) && ldEnd.isBefore(ldStart)))
 			return dblTotalBudget;
 
 		LocalDate ldOperationDate = ldStart;
