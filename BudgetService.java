@@ -30,12 +30,13 @@ public class BudgetService
 
 		for (Budget b : lstAllBudget)
 			hmpAllBudget.put(b.strBudgetPeriod, b);
-		
+
 System.out.println(ldStart + ";" + ldEnd);
 
-		while (ChronoUnit.MONTHS.between(ldOperationDate, ldEnd) >= 0 &&
-				(ldOperationDate.isBefore(ldEnd) || ldEnd.equals(ldStart)))
+		while (ldOperationDate.isBefore(ldEnd) || ldEnd.equals(ldStart))
 		{
+			int intDayCountOfMonth = ldOperationDate.getMonth().length(ldOperationDate.isLeapYear());
+			LocalDate endDateOfMonth = ldOperationDate.withDayOfMonth(intDayCountOfMonth);
 			String strOperatingPeriod = ldOperationDate.format(dfmonth); //YearMonth
 
 System.out.println("loop -> " + strOperatingPeriod);
@@ -43,8 +44,8 @@ System.out.println("loop -> " + strOperatingPeriod);
 			if (hmpAllBudget.containsKey(strOperatingPeriod)) // 當月有預算
 			{
 				double dblPeriodBudget = hmpAllBudget.get(strOperatingPeriod).dblBudget;
-				int intDayCountOfMonth = ldOperationDate.getMonth().length(ldOperationDate.isLeapYear());
-				LocalDate endDateOfMonth = ldOperationDate.withDayOfMonth(intDayCountOfMonth);
+				intDayCountOfMonth = ldOperationDate.getMonth().length(ldOperationDate.isLeapYear());
+				endDateOfMonth = ldOperationDate.withDayOfMonth(intDayCountOfMonth);
 				long lngComputingDayCOunt = ChronoUnit.DAYS.between(ldOperationDate, (ldEnd.isBefore(endDateOfMonth) ? ldEnd : endDateOfMonth)) + 1;
 
 System.out.println("loop with budget-> " + dblPeriodBudget + "; daycount=" + intDayCountOfMonth + ";enddate=" + endDateOfMonth + ";lowerbound=" + ldOperationDate);
@@ -52,6 +53,11 @@ System.out.println("computing day count = >> " + lngComputingDayCOunt);
 
 				dblTotalBudget += dblPeriodBudget * (lngComputingDayCOunt / (double) intDayCountOfMonth);
 			}
+
+			if (ldEnd.isAfter(endDateOfMonth))
+				ldOperationDate = ldOperationDate.withDayOfMonth(1);
+			else if (ldEnd.equals(ldOperationDate))
+				break;
 
 			ldOperationDate = ldOperationDate.plusMonths(1);
 
