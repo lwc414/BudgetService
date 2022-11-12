@@ -34,28 +34,23 @@ public class BudgetService
 		while (ChronoUnit.MONTHS.between(ldOperationDate, ldEnd) >= 0 &&
 				ldOperationDate.isBefore(ldEnd))
 		{
-			String strOperatingPeriod = ldOperationDate.format(dfmonth);
-//YearMonth
-			if (hmpAllBudget.containsKey(strOperatingPeriod))
+			System.out.println("===>" + ldOperationDate + ";" + ldEnd);
+			String strOperatingPeriod = ldOperationDate.format(dfmonth); //YearMonth
+
+			if (hmpAllBudget.containsKey(strOperatingPeriod)) // 當月有預算
 			{
 				double dblPeriodBudget = hmpAllBudget.get(strOperatingPeriod).dblBudget;
 				int intDayCountOfMonth = ldOperationDate.getMonth().length(ldOperationDate.isLeapYear());
 				LocalDate endDateOfMonth = ldOperationDate.withDayOfMonth(intDayCountOfMonth);
+				System.out.println(dblPeriodBudget);
 
-//				if (ldOperationDate.isAfter(ldOperationDate.withDayOfMonth(1))) //區間起始日非當月第一天
-//				{
-//					dblTotalBudget += dblPeriodBudget *
-//					((ChronoUnit.DAYS.between(ldOperationDate, (ldEnd.isBefore(endDateOfMonth) ? ldEnd : endDateOfMonth)) + 1) / intDayCountOfMonth);
-//				}
-//				else
-//				{
-					dblTotalBudget += dblPeriodBudget *
-					((ChronoUnit.DAYS.between(ldOperationDate, (ldEnd.isBefore(endDateOfMonth) ? ldEnd : endDateOfMonth)) + 1) / intDayCountOfMonth);
-//				}
+
+				dblTotalBudget += dblPeriodBudget *
+				((ChronoUnit.DAYS.between(ldOperationDate, (ldEnd.isBefore(endDateOfMonth) ? ldEnd : endDateOfMonth)) + 1) / intDayCountOfMonth);
 			}
 
 			ldOperationDate = ldOperationDate.plusMonths(1);
-			
+
 		}
 		return dblTotalBudget;
 	}
